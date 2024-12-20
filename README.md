@@ -1,4 +1,3 @@
-Here’s a detailed and robust README.md for your GitHub repository. It covers project description, setup instructions, features, and more.
 
 ChainRadar
 
