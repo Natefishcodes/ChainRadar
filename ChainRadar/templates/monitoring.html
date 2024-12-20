@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Monitoring{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Monitored Bitcoin Addresses</h2>
+
+<div class="row">
+    <!-- Wallet Addresses Section -->
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Wallet Addresses</h5>
+                {% if addresses %}
+                    <ul class="list-group">
+                        {% for address in addresses %}
+                            <li class="list-group-item">{{ address }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-center">No addresses are being monitored. Add some from the Dashboard.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications History Section -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Notifications History</h5>
+                {% if notifications %}
+                    <ul class="list-group">
+                        {% for notification in notifications %}
+                            <li class="list-group-item">
+                                <strong>{{ notification.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}:</strong>
+                                {{ notification.message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-center">No notifications yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

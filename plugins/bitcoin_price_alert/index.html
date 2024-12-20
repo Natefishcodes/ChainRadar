@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Bitcoin Price Alert{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Bitcoin Price Alert</h2>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="threshold" class="form-label">Price Threshold (USD)</label>
+            <input type="number" step="0.01" class="form-control" id="threshold" name="threshold" required>
+        </div>
+        <div class="mb-3">
+            <label for="notification_method" class="form-label">Notification Method</label>
+            <select class="form-control" id="notification_method" name="notification_method" required>
+                <option value="Telegram">Telegram</option>
+                <option value="Discord">Discord</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Set Alert</button>
+    </form>
+
+    <h3 class="mt-5">Current Alerts</h3>
+    <ul class="list-group">
+        {% for alert in alerts %}
+            <li class="list-group-item">
+                Alert at ${{ alert.threshold }} via {{ alert.notification_method }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

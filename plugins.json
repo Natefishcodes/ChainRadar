@@ -1,0 +1,8 @@
+[
+    {
+        "name": "Bitcoin Price Alert",
+        "folder": "bitcoin_price_alert",
+        "description": "Get notifications when Bitcoin crosses a specified price threshold.",
+        "enabled": false
+    }
+]
