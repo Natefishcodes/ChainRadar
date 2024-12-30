@@ -3,27 +3,43 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h2 class="mb-4 text-center">Welcome to Your Dashboard</h2>
-
-<div class="row">
-    <!-- Wallet Management Section -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Wallet Management</h5>
-                <p class="card-text">Add, view, and manage your wallet addresses.</p>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#walletModal">Manage Wallets</button>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Dashboard</h1>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Notifications Section -->
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Notifications</h5>
-                <p class="card-text">Configure your Discord and Telegram notifications.</p>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#notificationsModal">Set Up Notifications</button>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Wallet Management Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Wallet Management</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Add, view, and manage your wallet addresses.</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#walletModal">Manage Wallets</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Notifications</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Configure your Discord and Telegram notifications.</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#notificationsModal">Set Up Notifications</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -63,16 +79,8 @@
                         <input type="url" class="form-control" id="discord-webhook" placeholder="Enter Discord Webhook URL">
                     </div>
                     <div class="mb-3">
-                        <label for="discord-user-id" class="form-label">Discord User ID</label>
-                        <input type="text" class="form-control" id="discord-user-id" placeholder="Enter Discord User ID">
-                    </div>
-                    <div class="mb-3">
                         <label for="telegram-chat-id" class="form-label">Telegram Chat ID</label>
                         <input type="text" class="form-control" id="telegram-chat-id" placeholder="Enter Telegram Chat ID">
-                    </div>
-                    <div class="mb-3">
-                        <label for="telegram-user-id" class="form-label">Telegram User ID</label>
-                        <input type="text" class="form-control" id="telegram-user-id" placeholder="Enter Telegram User ID">
                     </div>
                 </form>
             </div>
@@ -86,7 +94,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // --- Wallet Management Functionality ---
+    // Wallet Management Functionality
     const walletFieldsContainer = document.getElementById("wallet-fields");
 
     function createWalletField(address = "") {
@@ -97,26 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <button type="button" class="btn btn-danger btn-sm ms-2 delete-wallet-field">&times;</button>
         `;
         walletFieldsContainer.appendChild(div);
-        div.querySelector(".wallet-input").focus();
     }
 
-    document.getElementById("walletModal").addEventListener("show.bs.modal", () => {
+    document.getElementById("walletModal").addEventListener("shown.bs.modal", () => {
         walletFieldsContainer.innerHTML = "";
         createWalletField();
-    });
-
-    walletFieldsContainer.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && e.target.value.trim() !== "") {
-            e.preventDefault();
-            createWalletField();
-        }
-    });
-
-    walletFieldsContainer.addEventListener("click", (e) => {
-        if (e.target.classList.contains("delete-wallet-field")) {
-            e.target.closest(".wallet-field").remove();
-            if (walletFieldsContainer.children.length === 0) createWalletField();
-        }
     });
 
     document.getElementById("confirm-wallets-btn").addEventListener("click", () => {
@@ -126,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("/update_wallet_addresses", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ wallet_addresses: addresses.join(",") })
+            body: JSON.stringify({ wallet_addresses: addresses })
         }).then(response => {
             if (response.ok) {
                 alert("Wallet addresses updated successfully!");
@@ -139,21 +132,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- Notifications Management Functionality ---
+    // Notifications Management Functionality
     document.getElementById("confirm-notifications-btn").addEventListener("click", () => {
         const discordWebhook = document.getElementById("discord-webhook").value.trim();
-        const discordUserId = document.getElementById("discord-user-id").value.trim();
         const telegramChatId = document.getElementById("telegram-chat-id").value.trim();
-        const telegramUserId = document.getElementById("telegram-user-id").value.trim();
 
         fetch("/update_notifications", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 discord_webhook: discordWebhook,
-                discord_user_id: discordUserId,
-                telegram_chat_id: telegramChatId,
-                telegram_user_id: telegramUserId
+                telegram_chat_id: telegramChatId
             })
         }).then(response => {
             if (response.ok) {
@@ -169,3 +158,4 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 {% endblock %}
+

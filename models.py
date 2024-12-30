@@ -1,5 +1,6 @@
-from extensions import db, login_manager
 from flask_login import UserMixin
+from extensions import db, login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 @login_manager.user_loader
@@ -19,6 +20,14 @@ class User(db.Model, UserMixin):
 
     # Relationship to notifications
     notifications = db.relationship('Notification', backref='user', lazy=True)
+
+        # Method to hash the password
+    def set_password(self, password):
+            self.password = generate_password_hash(password)
+
+        # Method to check the password
+    def check_password(self, password):
+            return check_password_hash(self.password, password)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.wallet_addresses}', '{self.discord_webhook}', '{self.telegram_chat_id}')"

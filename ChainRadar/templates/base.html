@@ -4,108 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ChainRadar{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-    <nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ url_for('home') }}">ChainRadar</a>
-        <div>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+            </li>
+        </ul>
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
             {% if current_user.is_authenticated %}
-                <a class="btn btn-outline-light me-2" href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a class="btn btn-outline-light me-2" href="{{ url_for('monitoring') }}">Monitoring</a>
-                <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Logout</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('monitoring') }}">Monitoring</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
             {% else %}
-                <a class="btn btn-outline-light me-2" href="{{ url_for('login') }}">Login</a>
-                <a class="btn btn-outline-success" href="{{ url_for('register') }}">Register</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                </li>
             {% endif %}
+        </ul>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="{{ url_for('home') }}" class="brand-link">
+            <span class="brand-text font-weight-light">ChainRadar</span>
+        </a>
+        <div class="sidebar">
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <li class="nav-item">
+                        <a href="{{ url_for('dashboard') }}" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('monitoring') }}" class="nav-link">
+                            <i class="nav-icon fas fa-chart-line"></i>
+                            <p>Monitoring</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
+    </aside>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <section class="content">
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </section>
     </div>
-</nav>
+    <!-- /.content-wrapper -->
 
-    <div class="container mt-5">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <footer class="main-footer">
+        <div class="float-right d-none d-sm-inline">
+            Version 1.0.0
+        </div>
+        <strong>&copy; 2024 ChainRadar.</strong> All rights reserved.
+    </footer>
+</div>
 
-        {% block content %}{% endblock %}
-    </div>
+<!-- AdminLTE Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script>
+    // Custom Modal Functionality
+    document.addEventListener("DOMContentLoaded", () => {
+        const manageWalletsBtn = document.getElementById("manageWalletsBtn");
+        const walletModal = document.getElementById("walletModal");
+        const closeWalletModal = document.getElementById("closeWalletModal");
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS for pop-up functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const manageWalletsButton = document.getElementById('manage-wallets-btn');
-            const walletModal = document.getElementById('walletModal');
-            const closeButton = document.getElementById('closeModal');
-
-            manageWalletsButton.addEventListener('click', () => {
-                walletModal.style.display = 'block';
+        if (manageWalletsBtn) {
+            manageWalletsBtn.addEventListener("click", () => {
+                walletModal.style.display = "flex";
             });
 
-            closeButton.addEventListener('click', () => {
-                walletModal.style.display = 'none';
+            closeWalletModal.addEventListener("click", () => {
+                walletModal.style.display = "none";
             });
 
-            window.addEventListener('click', (e) => {
+            window.addEventListener("click", (e) => {
                 if (e.target === walletModal) {
-                    walletModal.style.display = 'none';
+                    walletModal.style.display = "none";
                 }
             });
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const manageWalletsButton = document.getElementById('manage-wallets-btn');
-    const walletModal = document.getElementById('walletModal');
-    const closeButton = document.getElementById('closeModal');
-
-    manageWalletsButton.addEventListener('click', () => {
-        walletModal.style.display = 'block';
-    });
-
-    closeButton.addEventListener('click', () => {
-        walletModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === walletModal) {
-            walletModal.style.display = 'none';
-        }
-    });
-});
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const manageWalletsBtn = document.getElementById("manageWalletsBtn");
-    const walletModal = document.getElementById("walletModal");
-    const closeWalletModal = document.getElementById("closeWalletModal");
-
-    // Open the modal
-    manageWalletsBtn.addEventListener("click", () => {
-        walletModal.style.display = "flex";
-    });
-
-    // Close the modal
-    closeWalletModal.addEventListener("click", () => {
-        walletModal.style.display = "none";
-    });
-
-    // Close the modal when clicking outside of it
-    window.addEventListener("click", (e) => {
-        if (e.target === walletModal) {
-            walletModal.style.display = "none";
-        }
-    });
-});
-</script>

@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from datetime import datetime
 import threading
 import time
+from werkzeug.security import generate_password_hash, check_password_hash  # Import hashing functions
 
 # Initialize Flask app with explicit template folder path
 app = Flask(__name__, template_folder='ChainRadar/templates')
@@ -90,12 +91,12 @@ def home():
     return render_template("login.html", form=form)
 
 
-# Registration route
+# Registration route with password hashing
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = form.password.data  # For simplicity; no hashing for now
+        hashed_password = generate_password_hash(form.password.data)  # Hash the password
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
@@ -104,14 +105,15 @@ def register():
     return render_template("register.html", form=form)
 
 
-# Login route
+# Login route with password verification
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and user.password == form.password.data:
+        if user and check_password_hash(user.password, form.password.data):  # Verify hashed password
             login_user(user)
+            flash("Login successful!", "success")
             return redirect(url_for("dashboard"))
         else:
             flash("Login failed. Check your username and password.", "danger")
